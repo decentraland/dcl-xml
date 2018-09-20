@@ -1,0 +1,8 @@
+[
+  {
+    "name": "Compile",
+    "kind": "TSC",
+    "config": "./tsconfig.json",
+    "target": "node"
+  }
+]

@@ -1,0 +1,16 @@
+.vs/
+.vscode/
+.idea
+bower_components/
+node_modules/
+linker-app/build
+tmp/
+*.log
+.env
+
+dist/
+
+.DS_Store
+test-*
+scripts/*.js
+scripts/*.d.ts

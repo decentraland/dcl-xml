@@ -1,0 +1,29 @@
+{
+  "name": "dcl-xml",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "watch": "decentraland-compiler build.json --watch",
+    "build": "decentraland-compiler build.json",
+    "test": "mocha -r ts-node/register test/**/*.spec.ts"
+  },
+  "author": "Daniel Belohlavek",
+  "license": "MIT",
+  "prettier": {
+    "semi": false,
+    "singleQuote": true,
+    "printWidth": 140
+  },
+  "devDependencies": {
+    "@types/chai": "^4.1.5",
+    "@types/mocha": "^2.2.48",
+    "chai": "^4.1.2",
+    "dcl-tslint-config-standard": "^1.1.0",
+    "decentraland-api": "^4.1.1",
+    "decentraland-rpc": "^2.8.5",
+    "ebnf": "^1.6.3",
+    "mocha": "^4.1.0",
+    "ts-node": "^4.1.0"
+  }
+}
