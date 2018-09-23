@@ -8,13 +8,12 @@ const visitor = {
     if (node.children.length) {
       // Should fail in a previous phase if there is no <scene>
       // Other than comments, the scene tag must be the only node
-      debugger
       const sceneTag = node.children.find($ => $.type === 'TagNode')
       return visit(sceneTag, errors)
     }
   },
   TagNode(node: Nodes.TagNode, errors: Error[]) {
-    errors.push(...(node.errors || []))
+    errors.push(...node.errors)
 
     return {
       tag: node.tagName,
@@ -23,7 +22,7 @@ const visitor = {
     }
   },
   AttributeNode(node: Nodes.AttributeNode, errors: Error[]) {
-    errors.push(...(node.errors || []))
+    errors.push(...node.errors)
 
     return {
       [node.key]: node.value
