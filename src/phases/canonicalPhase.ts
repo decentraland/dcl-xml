@@ -6,6 +6,8 @@ import { ParsingPhaseResult } from './parsingPhase'
 const visitor = {
   document(astNode: IToken) {
     const node = new Nodes.DocumentNode(astNode)
+    node.start = astNode.start
+    node.end = astNode.end
     node.children = astNode.children.map($ => visit($))
     return node
   },
@@ -17,6 +19,8 @@ const visitor = {
     const isSelfClosed = astNode.children.some($ => $.type === 'selfClosingTag')
     const closingTagName = findChildrenType(astNode, 'closingName')
 
+    node.start = astNode.start
+    node.end = astNode.end
     node.tagName = tagName.text
     node.attributes = astNode.children.filter($ => $.type === 'attribute').map($ => visit($))
     node.children = tagBody ? tagBody.children.map($ => visit($)) : []
@@ -40,11 +44,17 @@ const visitor = {
       node.value = decodeEntities(JSON.parse(astNode.children[1].text))
     }
 
+    node.start = astNode.start
+    node.end = astNode.end
+
     return node
   },
   comment(astNode: IToken) {
     const node = new Nodes.CommentNode(astNode)
+
     node.text = astNode.text
+    node.start = astNode.start
+    node.end = astNode.end
 
     if (astNode.children.length > 0) {
       // Syntax Errors are the only possible children for a comment

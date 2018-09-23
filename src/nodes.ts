@@ -1,15 +1,16 @@
 import { IToken } from 'ebnf'
 
-export class Node {
+export abstract class Node {
+  abstract type: string
   errors: Error[] = []
-  parent: Node
-  start: number
-  end: number
+  start: number = 0
+  end: number = 0
 
   constructor(public astNode?: IToken) {}
 }
 
 export class DocumentNode extends Node {
+  type = 'DocumentNode'
   fileName: string // should be just scene.xml for most usecases
   children: Node[] // EntityNode or CommentNode
   getRoot() {
@@ -18,6 +19,7 @@ export class DocumentNode extends Node {
 }
 
 export class TagNode extends Node {
+  type = 'TagNode'
   tagName: string
   attributes: Array<AttributeNode>
   children: Node[] // EntityNode or CommentNode
@@ -25,10 +27,12 @@ export class TagNode extends Node {
 }
 
 export class AttributeNode extends Node {
+  type = 'AttributeNode'
   key: string
   value: string
 }
 
 export class CommentNode extends Node {
+  type = 'CommentNode'
   text: string
 }
