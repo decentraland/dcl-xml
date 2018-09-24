@@ -13,8 +13,8 @@ export class DocumentNode extends Node {
   type = 'DocumentNode'
   fileName: string // should be just scene.xml for most usecases
   children: Node[] // EntityNode or CommentNode
-  getRoot() {
-    return this.children.find(child => child instanceof TagNode)
+  getRoot(): TagNode {
+    return this.children.find(child => child instanceof TagNode) as TagNode
   }
 }
 
