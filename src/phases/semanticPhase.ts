@@ -34,17 +34,15 @@ function validateScene(document: DocumentNode, idRegistry: Map<string, Attribute
   return document
 }
 
-const tagsWalker = root => {
-  walker(node => {
-    if (node instanceof TagNode) {
-      if (!tagExists(node.tagName)) {
-        throw new AstNodeError(`Type error: Tag <${node.tagName}> does not exist.`, node)
-      }
-
-      validateTag(node)
+const tagsWalker = walker(node => {
+  if (node instanceof TagNode) {
+    if (!tagExists(node.tagName)) {
+      throw new AstNodeError(`Type error: Tag <${node.tagName}> does not exist.`, node)
     }
-  })(root)
-}
+
+    validateTag(node)
+  }
+})
 
 const idWalker = (idRegistry, root) => {
   walker(node => {
