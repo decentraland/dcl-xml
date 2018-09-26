@@ -14,25 +14,15 @@ export function validateTag(node: TagNode): void {
 
 const validatorFunctions = {
   basicEntityValidator(node: TagNode) {
-    validate(node, 'id')
-    validate(node, 'position')
-    validate(node, 'scale')
-    validate(node, 'rotation')
-    validate(node, 'look-at')
-    validate(node, 'key')
-    validate(node, 'visible')
-    validate(node, 'billboard')
+    validateAttributes(node, ['id', 'position', 'scale', 'rotation', 'look-at', 'key', 'visible', 'billboard'])
   },
   materialEntityValidator(node: TagNode) {
     validatorFunctions.basicEntityValidator(node)
-    validate(node, 'color')
-    validate(node, 'material')
-    validate(node, 'with-collisions')
+    validateAttributes(node, ['color', 'material', 'with-collisions'])
   },
   circleEntityValidator(node: TagNode) {
     validatorFunctions.materialEntityValidator(node)
-    validate(node, 'segments')
-    validate(node, 'arc')
+    validateAttributes(node, ['segments', 'arc'])
   },
   planeEntityValidator(node: TagNode) {
     validatorFunctions.materialEntityValidator(node)
@@ -40,50 +30,41 @@ const validatorFunctions = {
   },
   cylinderEntityValidator(node: TagNode) {
     validatorFunctions.materialEntityValidator(node)
-    validate(node, 'radius')
-    validate(node, 'arc')
-    validate(node, 'radiusTop')
-    validate(node, 'radiusBottom')
-    validate(node, 'segmentsRadial')
-    validate(node, 'segmentsHeight')
-    validate(node, 'openEnded')
+    validateAttributes(node, ['radius', 'arc', 'radiusTop', 'radiusBottom', 'segmentsRadial', 'segmentsHeight', 'openEnded'])
   },
   textEntityValidator(node: TagNode) {
     validatorFunctions.basicEntityValidator(node)
-    validate(node, 'outline-width')
-    validate(node, 'outline-color')
-    validate(node, 'color')
-    validate(node, 'font-family')
-    validate(node, 'font-size')
-    validate(node, 'font-weight')
-    validate(node, 'opacity')
-    validate(node, 'value')
-    validate(node, 'line-spacing')
-    validate(node, 'text-wrapping')
-    validate(node, 'h-align')
-    validate(node, 'v-align')
-    validate(node, 'width')
-    validate(node, 'height')
-    validate(node, 'line-count')
-    validate(node, 'resize-to-fit')
-    validate(node, 'shadow-blur')
-    validate(node, 'shadow-offset-x')
-    validate(node, 'shadow-offset-y')
-    validate(node, 'z-index')
-    validate(node, 'shadow-color')
-    validate(node, 'padding-top')
-    validate(node, 'padding-right')
-    validate(node, 'padding-bottom')
-    validate(node, 'padding-left')
+    validateAttributes(node, [
+      'outline-width',
+      'outline-color',
+      'color',
+      'font-family',
+      'font-size',
+      'font-weight',
+      'opacity',
+      'value',
+      'line-spacing',
+      'text-wrapping',
+      'h-align',
+      'v-align',
+      'width',
+      'height',
+      'line-count',
+      'resize-to-fit',
+      'shadow-blur',
+      'shadow-offset-x',
+      'shadow-offset-y',
+      'z-index',
+      'shadow-color',
+      'padding-top',
+      'padding-right',
+      'padding-bottom',
+      'padding-left'
+    ])
   },
   videoEntityValidator(node: TagNode) {
     validatorFunctions.basicEntityValidator(node)
-    validate(node, 'src')
-    validate(node, 'height')
-    validate(node, 'width')
-    validate(node, 'play')
-    validate(node, 'loop')
-    validate(node, 'volume')
+    validateAttributes(node, ['src', 'height', 'width', 'play', 'loop', 'volume'])
   },
   gltfEntityValidator(node: TagNode) {
     validatorFunctions.basicEntityValidator(node)
@@ -95,18 +76,26 @@ const validatorFunctions = {
   },
   inputTextEntityValidator(node: TagNode) {
     validatorFunctions.basicEntityValidator(node)
-    validate(node, 'color')
-    validate(node, 'font-family')
-    validate(node, 'font-size')
-    validate(node, 'value')
-    validate(node, 'width')
-    validate(node, 'height')
-    validate(node, 'background')
-    validate(node, 'focused-background')
-    validate(node, 'outline-width')
-    validate(node, 'max-length')
-    validate(node, 'placeholder')
+    validateAttributes(node, [
+      'color',
+      'font-family',
+      'font-size',
+      'value',
+      'width',
+      'height',
+      'background',
+      'focused-background',
+      'outline-width',
+      'max-length',
+      'placeholder'
+    ])
   }
+}
+
+function validateAttributes(node: TagNode, attributes: string[]): void {
+  attributes.forEach(attribute => {
+    validate(node, attribute)
+  })
 }
 
 const validate = (node: TagNode, name: string) => {
