@@ -1,6 +1,5 @@
 export const attributeValidators = new Map<string, (value: string) => void>([
   // BasicEntity
-  ['id', isUniq],
   ['position', isVector3],
   ['scale', isOneNumberOrVector3],
   ['rotation', isVector3],
@@ -51,14 +50,6 @@ export const attributeValidators = new Map<string, (value: string) => void>([
   ['max-length', isOneNumber]
 ])
 
-const uniqValues = new Set()
-function isUniq(value: string): void {
-  if (uniqValues.has(value)) {
-    throw new TypeError('Value must be uniq and is duplicated on this document')
-  }
-  uniqValues.add(value)
-}
-
 function isVector3(value: string): void {
   const variables = value.split(' ')
   if (variables.length !== 3 || !variables.every(variable => Number.isInteger(parseInt(variable, 10)))) {
@@ -107,8 +98,4 @@ function isAlignment(value: string): void {
   if (!value.match(/top|right|bottom|left/)) {
     throw new TypeError('Must be `top`, `right`, `bottom` or `left`')
   }
-}
-
-export function resetUniq() {
-  uniqValues.clear()
 }

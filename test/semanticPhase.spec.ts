@@ -98,7 +98,7 @@ describe('semanticPhase', () => {
     const canonicalPhase = new CanonicalPhaseResult(parsePhase)
     const { document } = new SemanticPhaseResult(canonicalPhase)
     const errors = getErrors([document])
-    expect(errors.length, `Existing errors: [${errors}]`).to.eq(1)
+    expect(errors.length, `Existing errors: [${errors}]`).to.eq(2)
     expect(errors[0].message).to.eq('Invalid attribute id. Value must be uniq and is duplicated on this document.')
   })
 
