@@ -1,15 +1,20 @@
 {
   "name": "dcl-xml",
   "version": "1.0.0",
-  "description": "",
+  "description": "Decentraland-flavored XML parser",
   "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
   "scripts": {
     "watch": "decentraland-compiler build.json --watch",
     "build": "decentraland-compiler build.json",
     "test": "mocha -r ts-node/register test/**/*.spec.ts"
   },
-  "author": "Daniel Belohlavek",
+  "author": "Decentraland",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/decentraland/dcl-xml.git"
+  },
   "prettier": {
     "semi": false,
     "singleQuote": true,
@@ -24,6 +29,7 @@
     "decentraland-rpc": "^2.8.5",
     "ebnf": "^1.6.3",
     "mocha": "^4.1.0",
+    "semantic-release": "^15.9.16",
     "ts-node": "^4.1.0"
   }
 }

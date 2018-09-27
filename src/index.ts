@@ -1,7 +1,16 @@
-import { ISimplifiedNode } from 'decentraland-api'
 import { CanonicalPhaseResult } from './phases/canonicalPhase'
 import { ParsingPhaseResult } from './phases/parsingPhase'
+import { camelCase } from './utils/formatHelpers'
+import { SemanticPhaseResult } from './phases/semanticPhase'
 import * as Nodes from './nodes'
+
+export type SimplifiedNode = {
+  tag: string
+  children: SimplifiedNode[]
+  attrs: {
+    [name: string]: string | number[] | object | boolean | number
+  }
+}
 
 const visitor = {
   DocumentNode(node: Nodes.DocumentNode, errors: Error[]) {
@@ -13,7 +22,7 @@ const visitor = {
     }
   },
   TagNode(node: Nodes.TagNode, errors: Error[]) {
-    errors.push(...node.errors)
+    errors.unshift(...node.errors)
 
     return {
       tag: node.tagName,
@@ -22,15 +31,17 @@ const visitor = {
     }
   },
   AttributeNode(node: Nodes.AttributeNode, errors: Error[]) {
-    errors.push(...node.errors)
-
-    return {
-      [node.key]: node.value
+    errors.unshift(...node.errors)
+    if (node.key && node.value) {
+      return {
+        [camelCase(node.key)]: node.value
+      }
     }
+    return null
   }
 }
 
-function visit(node: Nodes.Node, errs: Error[]): ISimplifiedNode {
+function visit(node: Nodes.Node, errs: Error[]): SimplifiedNode {
   if (visitor[node.type]) {
     return visitor[node.type](node, errs)
   } else {
@@ -38,13 +49,18 @@ function visit(node: Nodes.Node, errs: Error[]): ISimplifiedNode {
   }
 }
 
-export default function parse(input: string): { nodes: ISimplifiedNode; errors: Error[] } {
+export function parse(input: string): SemanticPhaseResult {
   const parsePhase = new ParsingPhaseResult('file.xml', input)
   const canonicalPhase = new CanonicalPhaseResult(parsePhase)
+  const semanticPhase = new SemanticPhaseResult(canonicalPhase)
+  return semanticPhase
+}
+
+export function getSimplifiedNode(ast: SemanticPhaseResult): { nodes: SimplifiedNode; errors: Error[] } {
   const errs = []
 
   return {
-    nodes: visit(canonicalPhase.document, errs),
+    nodes: visit(ast.document, errs),
     errors: errs
   }
 }
