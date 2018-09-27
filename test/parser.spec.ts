@@ -4,7 +4,7 @@ import { parse, getSimplifiedNode } from '../src'
 const validInput = `
 <scene attr="1 &amp; &gt;">
   <!-- comment -->
-  <gltf-model />
+  <gltf-model src="some-url/asd.gltf" />
 </scene>
 `
 
@@ -20,7 +20,7 @@ describe('parse', () => {
         children: [
           {
             tag: 'gltf-model',
-            attrs: {},
+            attrs: { src: 'some-url/asd.gltf' },
             children: []
           }
         ]
