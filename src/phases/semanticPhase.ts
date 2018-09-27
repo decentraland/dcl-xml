@@ -31,6 +31,7 @@ function validateScene(document: DocumentNode, idRegistry: Map<string, Attribute
 
   tagsWalker(document.getRoot())
   idWalker(idRegistry, document.getRoot())
+  warningsWalker(document.getRoot())
   return document
 }
 
@@ -60,3 +61,11 @@ const idWalker = (idRegistry, root) => {
     }
   })(root)
 }
+
+const warningsWalker = walker(node => {
+  if (node instanceof TagNode) {
+    node.attributes
+      .filter(n => 'key' in n && !n.verified)
+      .forEach(n => n.errors.push(new AstNodeError(`Unknown attribute with name "${n.key}".`, n, true)))
+  }
+})

@@ -4,6 +4,7 @@ import { ParsingPhaseResult } from '../src/phases/parsingPhase'
 import { CanonicalPhaseResult } from '../src/phases/canonicalPhase'
 import { SemanticPhaseResult } from '../src/phases/semanticPhase'
 import { Node } from '../src/nodes'
+import { AstNodeError } from '../src/phases/errorHandling'
 
 const validScene = `
 <scene>
@@ -139,5 +140,15 @@ describe('semanticPhase', () => {
     const errors = getErrors([document])
     expect(errors.length, `Existing errors: [${errors}]`).to.eq(1)
     expect(errors[0].message).to.eq('Missing attribute value in text.')
+  })
+
+  it('should add a warning error on unknown attributes', () => {
+    const parsePhase = new ParsingPhaseResult('file.xml', `<scene><text value="hi" valin="top" /></scene>`)
+    const canonicalPhase = new CanonicalPhaseResult(parsePhase)
+    const { document } = new SemanticPhaseResult(canonicalPhase)
+    const errors = getErrors([document])
+    expect(errors.length, `Existing errors: [${errors}]`).to.eq(1)
+    expect(errors[0].message).to.eq(`Unknown attribute with name "valin".`)
+    expect((errors[0] as AstNodeError).warning).to.eq(true)
   })
 })

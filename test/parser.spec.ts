@@ -2,7 +2,7 @@ import { expect } from 'chai'
 import { parse, getSimplifiedNode } from '../src'
 
 const validInput = `
-<scene attr="1 &amp; &gt;">
+<scene id="1 &amp; &gt;">
   <!-- comment -->
   <gltf-model src="some-url/asd.gltf" />
 </scene>
@@ -16,7 +16,7 @@ describe('parse', () => {
     expect(res).to.deep.equal({
       nodes: {
         tag: 'scene',
-        attrs: { attr: '1 & >' },
+        attrs: { id: '1 & >' },
         children: [
           {
             tag: 'gltf-model',
