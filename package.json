@@ -9,8 +9,12 @@
     "build": "decentraland-compiler build.json",
     "test": "mocha -r ts-node/register test/**/*.spec.ts"
   },
-  "author": "Daniel Belohlavek",
+  "author": "Decentraland",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/decentraland/dcl-xml.git"
+  },
   "prettier": {
     "semi": false,
     "singleQuote": true,
