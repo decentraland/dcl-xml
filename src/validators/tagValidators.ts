@@ -4,7 +4,7 @@ import { attributeValidators } from './attributeValidators'
 
 type AttributeOptions = {
   attribute: string
-  isRequired?: boolean
+  required?: boolean
 }
 
 export function tagExists(key: string): boolean {
@@ -64,7 +64,7 @@ const validatorFunctions = {
       { attribute: 'font-size' },
       { attribute: 'font-weight' },
       { attribute: 'opacity' },
-      { attribute: 'value', isRequired: true },
+      { attribute: 'value', required: true },
       { attribute: 'line-spacing' },
       { attribute: 'text-wrapping' },
       { attribute: 'h-align' },
@@ -87,7 +87,7 @@ const validatorFunctions = {
   videoEntityValidator(node: TagNode) {
     validatorFunctions.basicEntityValidator(node)
     validateAttributes(node, [
-      { attribute: 'src', isRequired: true },
+      { attribute: 'src', required: true },
       { attribute: 'height' },
       { attribute: 'width' },
       { attribute: 'play' },
@@ -118,20 +118,45 @@ const validatorFunctions = {
       { attribute: 'max-length' },
       { attribute: 'placeholder' }
     ])
+  },
+  materialDescriptorEntityValidator(node: TagNode) {
+    validateAttributes(node, [
+      { attribute: 'id', required: true },
+      { attribute: 'alpha' },
+      { attribute: 'ambient-color' },
+      { attribute: 'albedo-color' },
+      { attribute: 'reflectivity-color' },
+      { attribute: 'reflection-color' },
+      { attribute: 'metallic' },
+      { attribute: 'roughness' },
+      { attribute: 'albedo-texture' },
+      { attribute: 'alpha-texture' },
+      { attribute: 'emisive-texture' },
+      { attribute: 'bump-texture' },
+      { attribute: 'refraction-texture' },
+      { attribute: 'direct-intensity' },
+      { attribute: 'emissive-intensity' },
+      { attribute: 'environment-intensity' },
+      { attribute: 'specular-intensity' },
+      { attribute: 'micro-surface' },
+      { attribute: 'disable-lighting' },
+      { attribute: 'transparency-mode' },
+      { attribute: 'has-alpha' }
+    ])
   }
 }
 
 function validateAttributes(node: TagNode, attributes: AttributeOptions[]): void {
-  attributes.forEach(({ attribute, isRequired }) => {
-    validate(node, attribute, isRequired)
+  attributes.forEach(({ attribute, required }) => {
+    validate(node, attribute, required)
   })
 }
 
-const validate = (node: TagNode, name: string, isRequired: boolean = false) => {
+const validate = (node: TagNode, name: string, required: boolean = false) => {
   const attributeNode = node.attributes.find(node => node.key === name)
 
   if (!attributeNode) {
-    if (isRequired) {
+    if (required) {
       node.errors.push(new AstNodeError(`Missing attribute ${name} in ${node.tagName}.`, node))
     }
     return
@@ -159,5 +184,6 @@ const tagValidators = new Map<string, (node: TagNode) => void>([
   ['video', validatorFunctions.videoEntityValidator],
   ['gltf-model', validatorFunctions.gltfEntityValidator],
   ['obj-model', validatorFunctions.objEntityValidator],
-  ['input-text', validatorFunctions.inputTextEntityValidator]
+  ['input-text', validatorFunctions.inputTextEntityValidator],
+  ['material', validatorFunctions.materialDescriptorEntityValidator]
 ])
