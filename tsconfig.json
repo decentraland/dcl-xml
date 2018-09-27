@@ -3,6 +3,7 @@
     "module": "commonjs",
     "target": "es2015",
     "diagnostics": true,
+    "declaration": true,
     "outDir": "dist",
     "moduleResolution": "node",
     "stripInternal": true,
