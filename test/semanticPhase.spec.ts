@@ -124,11 +124,20 @@ describe('semanticPhase', () => {
   })
 
   it('should add an error to wrong alignment values', () => {
-    const parsePhase = new ParsingPhaseResult('file.xml', `<scene><text v-align="near" /></scene>`)
+    const parsePhase = new ParsingPhaseResult('file.xml', `<scene><text value="hola" v-align="near" /></scene>`)
     const canonicalPhase = new CanonicalPhaseResult(parsePhase)
     const { document } = new SemanticPhaseResult(canonicalPhase)
     const errors = getErrors([document])
     expect(errors.length, `Existing errors: [${errors}]`).to.eq(1)
     expect(errors[0].message).to.eq('Invalid attribute v-align. Must be `top`, `right`, `bottom` or `left`.')
+  })
+
+  it('should add an error on missing non-optional attributes', () => {
+    const parsePhase = new ParsingPhaseResult('file.xml', `<scene><text /></scene>`)
+    const canonicalPhase = new CanonicalPhaseResult(parsePhase)
+    const { document } = new SemanticPhaseResult(canonicalPhase)
+    const errors = getErrors([document])
+    expect(errors.length, `Existing errors: [${errors}]`).to.eq(1)
+    expect(errors[0].message).to.eq('Missing attribute value in text.')
   })
 })
