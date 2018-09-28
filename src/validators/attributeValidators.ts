@@ -47,7 +47,24 @@ export const attributeValidators = new Map<string, (value: string) => void>([
   ['play', isBoolean],
   ['volume', isOneNumber],
   // InputTextEntity
-  ['max-length', isOneNumber]
+  ['max-length', isOneNumber],
+  // MaterialDescriptorEntity
+  ['alpha', isOneNumber],
+  ['ambient-color', isColor],
+  ['albedo-color', isColor],
+  ['reflectivity-color', isColor],
+  ['reflection-color', isColor],
+  ['emissive-color', isColor],
+  ['metallic', isOneNumber],
+  ['roughness', isOneNumber],
+  ['direct-intensity', isOneNumber],
+  ['emissive-intensity', isOneNumber],
+  ['environment-intensity', isOneNumber],
+  ['specular-intensity', isOneNumber],
+  ['micro-surface', isOneNumber],
+  ['disable-lighting', isBoolean],
+  ['transparency-mode', isTransparency],
+  ['has-alpha', isBoolean]
 ])
 
 function isVector3(value: string): void {
@@ -97,5 +114,11 @@ function isBillboard(value: string): void {
 function isAlignment(value: string): void {
   if (!value.match(/top|right|bottom|left/)) {
     throw new TypeError('Must be `top`, `right`, `bottom` or `left`')
+  }
+}
+
+function isTransparency(value: string): void {
+  if (!value.match(/[0-3]/)) {
+    throw new TypeError('Must be number between 0 and 3')
   }
 }

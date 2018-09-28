@@ -8,8 +8,9 @@ import { AstNodeError } from '../src/phases/errorHandling'
 
 const validScene = `
 <scene>
+  <material id="bla" transparency-mode="2" />
   <box id="3" color="#ff00aa" position="1 2 3" />
-  <sphere id="2" color="#00aaff" position="1 2 3" scale="4 4 4" />
+  <sphere material="#bla" id="2" color="#00aaff" position="1 2 3" scale="4 4 4" />
   <plane color="#00aaff" position="1 2 3" scale="3" rotation="-90 0 0" />
 </scene>
 `
@@ -142,12 +143,40 @@ describe('semanticPhase', () => {
     expect(errors[0].message).to.eq('Missing attribute value in text.')
   })
 
+  it('should add an error to wrong transparency values', () => {
+    const parsePhase = new ParsingPhaseResult('file.xml', `<scene><material id="bla" transparency-mode="5" /></scene>`)
+    const canonicalPhase = new CanonicalPhaseResult(parsePhase)
+    const { document } = new SemanticPhaseResult(canonicalPhase)
+    const errors = getErrors([document])
+    expect(errors.length, `Existing errors: [${errors}]`).to.eq(1)
+    expect(errors[0].message).to.eq('Invalid attribute transparency-mode. Must be number between 0 and 3.')
+  })
+
+  it('should add an error to wrong referenced material ID values', () => {
+    const scene = `
+      <scene>
+        <material id="bla" transparency-mode="2" />
+        <box id="3" color="#ff00aa" position="1 2 3" />
+        <sphere material="#asd" id="2" color="#00aaff" position="1 2 3" scale="4 4 4" />
+        <plane color="#00aaff" position="1 2 3" scale="3" rotation="-90 0 0" />
+      </scene>`
+    const parsePhase = new ParsingPhaseResult('file.xml', scene)
+    const canonicalPhase = new CanonicalPhaseResult(parsePhase)
+    const { document } = new SemanticPhaseResult(canonicalPhase)
+    const errors = getErrors([document])
+    expect(errors.length, `Existing errors: [${errors}]`).to.eq(1)
+    expect(errors[0].message).to.eq(
+      'Invalid attribute material "#asd". Value must be a uniq ID referenced with preffix "#" and must be declared in the same document as <material />.'
+    )
+  })
+
   it('should add a warning error on unknown attributes', () => {
     const parsePhase = new ParsingPhaseResult('file.xml', `<scene><text value="hi" valin="top" /></scene>`)
     const canonicalPhase = new CanonicalPhaseResult(parsePhase)
     const { document } = new SemanticPhaseResult(canonicalPhase)
     const errors = getErrors([document])
     expect(errors.length, `Existing errors: [${errors}]`).to.eq(1)
+
     expect(errors[0].message).to.eq(`Unknown attribute with name "valin".`)
     expect((errors[0] as AstNodeError).warning).to.eq(true)
   })
