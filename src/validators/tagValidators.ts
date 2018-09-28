@@ -154,13 +154,14 @@ function validateAttributes(node: TagNode, attributes: AttributeOptions[]): void
 
 const validate = (node: TagNode, name: string, required: boolean = false) => {
   const attributeNode = node.attributes.find(node => node.key === name)
-
   if (!attributeNode) {
     if (required) {
       node.errors.push(new AstNodeError(`Missing attribute ${name} in ${node.tagName}.`, node))
     }
     return
   }
+
+  attributeNode.verified = true
 
   if (attributeValidators.has(attributeNode.key)) {
     try {

@@ -30,6 +30,7 @@ export class AttributeNode extends Node {
   type = 'AttributeNode'
   key: string
   value: string
+  verified: boolean
 }
 
 export class CommentNode extends Node {
