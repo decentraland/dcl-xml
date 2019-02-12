@@ -21,6 +21,8 @@
     "printWidth": 140
   },
   "dependencies": {
+    "dcl-scene-writer": "^0.2.1",
+    "decentraland-ecs": "^5.0.0",
     "ebnf": "^1.6.3"
   },
   "devDependencies": {

@@ -2,19 +2,40 @@ import { TagNode } from '../nodes'
 import { AstNodeError } from '../phases/errorHandling'
 import { attributeValidators } from './attributeValidators'
 
+export enum EntityCategory {
+  BASIC,
+  MATERIAL,
+  CIRCLE,
+  PLANE,
+  CYLINDER,
+  TEXT,
+  VIDEO,
+  MODEL,
+  INPUT_TEXT,
+  MATERIAL_DESCRIPTOR
+}
+
 type AttributeOptions = {
   attribute: string
   required?: boolean
 }
 
 export function tagExists(key: string): boolean {
-  return tagValidators.has(key)
+  return tagCategories.has(key) && tagValidators.has(tagCategories.get(key))
 }
 
 export function validateTag(node: TagNode): void {
-  if (tagValidators.has(node.tagName)) {
-    tagValidators.get(node.tagName)(node)
+  if (!tagCategories.has(node.tagName)) {
+    return
   }
+
+  const category = tagCategories.get(node.tagName)
+
+  if (!tagValidators.has(category)) {
+    return
+  }
+
+  tagValidators.get(category)(node)
 }
 
 const validatorFunctions = {
@@ -172,19 +193,32 @@ const validate = (node: TagNode, name: string, required: boolean = false) => {
   }
 }
 
-const tagValidators = new Map<string, (node: TagNode) => void>([
-  ['scene', validatorFunctions.basicEntityValidator],
-  ['entity', validatorFunctions.basicEntityValidator],
-  ['box', validatorFunctions.materialEntityValidator],
-  ['sphere', validatorFunctions.materialEntityValidator],
-  ['circle', validatorFunctions.circleEntityValidator],
-  ['plane', validatorFunctions.planeEntityValidator],
-  ['cylinder', validatorFunctions.cylinderEntityValidator],
-  ['cone', validatorFunctions.cylinderEntityValidator],
-  ['text', validatorFunctions.textEntityValidator],
-  ['video', validatorFunctions.videoEntityValidator],
-  ['gltf-model', validatorFunctions.gltfEntityValidator],
-  ['obj-model', validatorFunctions.objEntityValidator],
-  ['input-text', validatorFunctions.inputTextEntityValidator],
-  ['material', validatorFunctions.materialDescriptorEntityValidator]
+const tagValidators = new Map<EntityCategory, (node: TagNode) => void>([
+  [EntityCategory.BASIC, validatorFunctions.basicEntityValidator],
+  [EntityCategory.MATERIAL, validatorFunctions.materialEntityValidator],
+  [EntityCategory.CIRCLE, validatorFunctions.circleEntityValidator],
+  [EntityCategory.PLANE, validatorFunctions.planeEntityValidator],
+  [EntityCategory.CIRCLE, validatorFunctions.cylinderEntityValidator],
+  [EntityCategory.TEXT, validatorFunctions.textEntityValidator],
+  [EntityCategory.VIDEO, validatorFunctions.videoEntityValidator],
+  [EntityCategory.MODEL, validatorFunctions.gltfEntityValidator],
+  [EntityCategory.INPUT_TEXT, validatorFunctions.inputTextEntityValidator],
+  [EntityCategory.MATERIAL_DESCRIPTOR, validatorFunctions.materialDescriptorEntityValidator]
+])
+
+export const tagCategories = new Map<string, EntityCategory>([
+  ['scene', EntityCategory.BASIC],
+  ['entity', EntityCategory.BASIC],
+  ['box', EntityCategory.MATERIAL],
+  ['sphere', EntityCategory.MATERIAL],
+  ['circle', EntityCategory.CIRCLE],
+  ['plane', EntityCategory.PLANE],
+  ['cylinder', EntityCategory.CYLINDER],
+  ['cone', EntityCategory.CYLINDER],
+  ['text', EntityCategory.TEXT],
+  ['video', EntityCategory.VIDEO],
+  ['gltf-model', EntityCategory.MODEL],
+  ['obj-model', EntityCategory.MODEL],
+  ['input-text', EntityCategory.INPUT_TEXT],
+  ['material', EntityCategory.MATERIAL_DESCRIPTOR]
 ])
